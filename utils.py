@@ -279,7 +279,7 @@ def get_snes_palette_transformer(use_luma=False, always=None, middle=True,
             values.append(index)
         values = sorted(values)
         low, high = min(values), max(values)
-        median = values[len(values)/2]
+        median = values[len(values)//2]
         clusters = [set([low]), set([high])]
         done = set([low, high])
         if median not in done and random.choice([True, False]):
