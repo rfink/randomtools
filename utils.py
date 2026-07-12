@@ -81,7 +81,7 @@ def generate_name(size=None, maxsize=10, namegen_table=None):
     lookback = len(generator.keys()[0])
 
     if not size:
-        halfmax = maxsize / 2
+        halfmax = maxsize // 2
         size = random.randint(1, halfmax) + random.randint(1, halfmax)
         if size < 4:
             size += random.randint(0, halfmax)
