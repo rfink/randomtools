@@ -4,22 +4,32 @@ from os import path
 from sys import argv
 from xml.etree import ElementTree
 
-from .tablereader import tblpath, get_open_file
+from . import tablereader
+from .tablereader import get_open_file
 
-alt_filenames = {}
+_alt_filenames = None
 
-try:
-    for line in open(path.join(tblpath, "xml_name_mapping.txt")):
-        line = line.strip()
-        if not line or line[0] == '#':
-            continue
-        while '  ' in line:
-            line = line.replace('  ', ' ')
 
-        filename, alt_filename = line.split()
-        alt_filenames[filename] = alt_filename
-except FileNotFoundError:
-    pass
+def get_alt_filenames():
+    # Loaded lazily so consumers can override tablereader.tblpath before
+    # the mapping file is read.
+    global _alt_filenames
+    if _alt_filenames is None:
+        _alt_filenames = {}
+        try:
+            for line in open(path.join(tablereader.tblpath,
+                                       "xml_name_mapping.txt")):
+                line = line.strip()
+                if not line or line[0] == '#':
+                    continue
+                while '  ' in line:
+                    line = line.replace('  ', ' ')
+
+                filename, alt_filename = line.split()
+                _alt_filenames[filename] = alt_filename
+        except FileNotFoundError:
+            pass
+    return _alt_filenames
 
 
 def text_to_bytecode(text):
@@ -32,6 +42,7 @@ def text_to_bytecode(text):
 
 
 def get_patchdicts(filename):
+    alt_filenames = get_alt_filenames()
     tree = ElementTree.parse(filename)
     assert tree.getroot().tag == 'Patches'
     patches = [n for n in tree.getroot()]

@@ -7,7 +7,7 @@ from hashlib import md5
 from io import SEEK_END
 from math import ceil
 from os import path
-from sys import stdout
+from sys import argv, stdout
 
 from _io import BufferedRandom, BytesIO
 
@@ -23,9 +23,17 @@ try:
     from sys import _MEIPASS
     tblpath = path.join(_MEIPASS, "tables")
 except ImportError:
-    tblpath = "tables"
-head = __file__.rsplit('randomtools', 1)[0]
-tblpath = path.join(head, tblpath)
+    # The "tables" directory belongs to the randomizer using this library,
+    # so look next to the running script, falling back to the working
+    # directory (e.g. interactive sessions).
+    tblpath = path.join(path.dirname(path.abspath(argv[0])), "tables")
+    if not path.isdir(tblpath):
+        tblpath = path.abspath("tables")
+
+
+def set_table_path(p):
+    global tblpath
+    tblpath = p
 
 addresses = lambda: None
 names = lambda: None
