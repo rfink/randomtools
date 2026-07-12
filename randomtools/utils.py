@@ -78,7 +78,7 @@ def generate_name(size=None, maxsize=10, namegen_table=None):
                 lookback = len(key)
         return
 
-    lookback = len(generator.keys()[0])
+    lookback = len(next(iter(generator)))
 
     if not size:
         halfmax = maxsize // 2
@@ -125,9 +125,9 @@ def get_snes_palette_transformer(use_luma=False, always=None, middle=True,
         if swapcode is None:
             swapcode = utran.randint(0, 7)
 
-        f = lambda w: w
-        g = lambda w: w
-        h = lambda w: w
+        f = lambda x, y, z: (x, y, z)
+        g = lambda x, y, z: (x, y, z)
+        h = lambda x, y, z: (x, y, z)
         if swapcode & 1:
             f = lambda x, y, z: (y, x, z)
         if swapcode & 2:

@@ -1658,6 +1658,11 @@ class TableObject(object):
                 pointer += size
             elif other == "str":
                 assert len(value) == size
+                if isinstance(value, str):
+                    if hasattr(self, 'encode_bytes'):
+                        value = self.encode_bytes(value)
+                    else:
+                        value = value.encode('latin-1')
                 f.seek(pointer)
                 f.write(value)
                 pointer += size
@@ -1690,7 +1695,7 @@ class TableObject(object):
                 objs = [o for o in cls.every if o.groupindex == i]
                 f.seek(pointer)
                 if cls.specs.groupednum is None:
-                    f.write(chr(len(objs)))
+                    f.write(bytes([len(objs)]))
                     pointer += 1
                 for o in objs:
                     pointer = o.write_data(None, pointer)
@@ -1750,7 +1755,7 @@ class TableObject(object):
                 for o in objs:
                     pointer = o.write_data(None, pointer)
                 f.seek(pointer)
-                f.write(chr(cls.specs.delimitval))
+                f.write(bytes([cls.specs.delimitval]))
                 pointer += 1
 
     @classmethod
