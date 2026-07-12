@@ -1,4 +1,4 @@
-from cdrom_ecc import get_edc_ecc
+from .cdrom_ecc import get_edc_ecc
 
 
 def remove_sector_metadata(sourcefile, outfile):
